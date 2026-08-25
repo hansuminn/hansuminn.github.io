@@ -304,7 +304,7 @@ body {
     .series-header {
         padding: 20px;
     }
-    
+
         .series-name .name-ko {
         font-size: 20px;
         font-weight: 600;
@@ -861,4 +861,23 @@ body.lightbox-open {
     font-weight: 400;
     letter-spacing: 1.6px;
     line-height: 1;
+}
+/* FINAL MOBILE NAME FIX */
+
+@media (max-width: 600px) {
+
+    .series-name .name-ko {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+    }
+
+    .series-name .name-en {
+        margin-top: 5px !important;
+        font-size: 20px !important;
+        font-weight: 400 !important;
+        letter-spacing: 1.6px !important;
+        line-height: 1 !important;
+    }
+
 }
