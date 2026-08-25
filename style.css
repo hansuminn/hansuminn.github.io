@@ -463,7 +463,7 @@ body.lightbox-open {
     z-index: 9999;
 
     display: none;
-    
+
     .lightbox.active {
     display: flex;
     align-items: center;
@@ -778,12 +778,6 @@ body.lightbox-open {
     }
 
 
-    .slide {
-        padding:
-            8px
-            6vw;
-    }
-
 
     .lightbox-image {
         max-width: 86vw;
@@ -823,4 +817,15 @@ body.lightbox-open {
         top: 14px;
         right: 14px;
     }
+}
+/* 슬라이드 한 장이 화면 전체 폭을 정확히 차지 */
+.slide {
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+}
+
+/* 가만히 있을 때 옆 작품이 보이지 않도록 */
+.slider-window {
+    overflow: hidden;
 }
