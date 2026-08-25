@@ -119,42 +119,143 @@ artworks.forEach((image, index) => {
 
 document.querySelector(".lightbox-content").appendChild(thumbnailContainer);
 /* =========================
-   MOBILE SWIPE
+   DRAG SWIPE
 ========================= */
 
-let touchStartX = 0;
-let touchEndX = 0;
+let dragStartX = 0;
+let dragCurrentX = 0;
+let isDragging = false;
 
-lightbox.addEventListener("touchstart", (event) => {
-    touchStartX = event.changedTouches[0].screenX;
+lightboxImage.addEventListener("touchstart", (event) => {
+    if (!lightbox.classList.contains("active")) return;
+
+    isDragging = true;
+
+    dragStartX = event.touches[0].clientX;
+    dragCurrentX = dragStartX;
+
+    lightboxImage.style.transition = "none";
 });
 
-lightbox.addEventListener("touchend", (event) => {
-    touchEndX = event.changedTouches[0].screenX;
 
-    const swipeDistance = touchEndX - touchStartX;
+lightboxImage.addEventListener("touchmove", (event) => {
+    if (!isDragging) return;
 
-    /* 너무 살짝 움직인 건 무시 */
-    if (Math.abs(swipeDistance) < 50) return;
+    dragCurrentX = event.touches[0].clientX;
+
+    const moveX = dragCurrentX - dragStartX;
+
+    lightboxImage.style.transform =
+        `translateX(${moveX}px)`;
+
+    lightboxImage.style.opacity =
+        Math.max(0.55, 1 - Math.abs(moveX) / 500);
+});
 
 
-    /* 왼쪽으로 밀기 → 다음 작품 */
-    if (swipeDistance < 0) {
+lightboxImage.addEventListener("touchend", () => {
+    if (!isDragging) return;
 
-        currentIndex =
-            (currentIndex + 1) % artworks.length;
+    isDragging = false;
 
-        showArtwork(currentIndex);
+    const moveX = dragCurrentX - dragStartX;
+
+    lightboxImage.style.transition =
+        "transform 0.28s ease, opacity 0.28s ease";
+
+
+    /* 왼쪽으로 충분히 밀었을 때 → 다음 작품 */
+
+    if (moveX < -70) {
+
+        lightboxImage.style.transform =
+            "translateX(-120%)";
+
+        lightboxImage.style.opacity = "0";
+
+        setTimeout(() => {
+
+            currentIndex =
+                (currentIndex + 1) % artworks.length;
+
+            showArtwork(currentIndex);
+
+            lightboxImage.style.transition = "none";
+            lightboxImage.style.transform =
+                "translateX(120%)";
+
+            requestAnimationFrame(() => {
+
+                requestAnimationFrame(() => {
+
+                    lightboxImage.style.transition =
+                        "transform 0.28s ease, opacity 0.28s ease";
+
+                    lightboxImage.style.transform =
+                        "translateX(0)";
+
+                    lightboxImage.style.opacity = "1";
+
+                });
+
+            });
+
+        }, 280);
+
     }
 
 
-    /* 오른쪽으로 밀기 → 이전 작품 */
-    if (swipeDistance > 0) {
+    /* 오른쪽으로 충분히 밀었을 때 → 이전 작품 */
 
-        currentIndex =
-            (currentIndex - 1 + artworks.length)
-            % artworks.length;
+    else if (moveX > 70) {
 
-        showArtwork(currentIndex);
+        lightboxImage.style.transform =
+            "translateX(120%)";
+
+        lightboxImage.style.opacity = "0";
+
+        setTimeout(() => {
+
+            currentIndex =
+                (currentIndex - 1 + artworks.length)
+                % artworks.length;
+
+            showArtwork(currentIndex);
+
+            lightboxImage.style.transition = "none";
+            lightboxImage.style.transform =
+                "translateX(-120%)";
+
+            requestAnimationFrame(() => {
+
+                requestAnimationFrame(() => {
+
+                    lightboxImage.style.transition =
+                        "transform 0.28s ease, opacity 0.28s ease";
+
+                    lightboxImage.style.transform =
+                        "translateX(0)";
+
+                    lightboxImage.style.opacity = "1";
+
+                });
+
+            });
+
+        }, 280);
+
     }
+
+
+    /* 조금만 밀었으면 원래 자리로 복귀 */
+
+    else {
+
+        lightboxImage.style.transform =
+            "translateX(0)";
+
+        lightboxImage.style.opacity = "1";
+
+    }
+
 });

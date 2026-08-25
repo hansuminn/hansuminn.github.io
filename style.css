@@ -422,3 +422,8 @@ body {
 .caption-title {
     margin-right: 12px;
 }
+.lightbox-image {
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-drag: none;
+}
