@@ -118,3 +118,43 @@ artworks.forEach((image, index) => {
 });
 
 document.querySelector(".lightbox-content").appendChild(thumbnailContainer);
+/* =========================
+   MOBILE SWIPE
+========================= */
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+lightbox.addEventListener("touchstart", (event) => {
+    touchStartX = event.changedTouches[0].screenX;
+});
+
+lightbox.addEventListener("touchend", (event) => {
+    touchEndX = event.changedTouches[0].screenX;
+
+    const swipeDistance = touchEndX - touchStartX;
+
+    /* 너무 살짝 움직인 건 무시 */
+    if (Math.abs(swipeDistance) < 50) return;
+
+
+    /* 왼쪽으로 밀기 → 다음 작품 */
+    if (swipeDistance < 0) {
+
+        currentIndex =
+            (currentIndex + 1) % artworks.length;
+
+        showArtwork(currentIndex);
+    }
+
+
+    /* 오른쪽으로 밀기 → 이전 작품 */
+    if (swipeDistance > 0) {
+
+        currentIndex =
+            (currentIndex - 1 + artworks.length)
+            % artworks.length;
+
+        showArtwork(currentIndex);
+    }
+});
