@@ -82,29 +82,32 @@
 
 
     <!-- 작품 클릭했을 때 확대 화면 -->
-    <div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
 
-        <button class="lightbox-close" id="lightbox-close">
-            ×
-        </button>
+    <div class="slider-window">
 
-        <div class="lightbox-content">
+        <div class="slider-track" id="slider-track">
 
-            <img
-                id="lightbox-image"
-                class="lightbox-image"
-                src=""
-                alt=""
-            >
+            <div class="slide">
+                <img id="prev-image" class="lightbox-image" src="" alt="">
+            </div>
 
-            <div
-                class="lightbox-caption"
-                id="lightbox-caption">
+            <div class="slide">
+                <img id="lightbox-image" class="lightbox-image" src="" alt="">
+            </div>
+
+            <div class="slide">
+                <img id="next-image" class="lightbox-image" src="" alt="">
             </div>
 
         </div>
 
     </div>
+
+    <div class="lightbox-caption" id="lightbox-caption">
+    </div>
+
+</div>
 
 
     <script src="../script.js"></script>
