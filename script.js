@@ -1,469 +1,498 @@
-/* ========================================
-   기본 요소
-======================================== */
+/* =========================================
+   HAN SUMIN PORTFOLIO
+   SERIES LIGHTBOX + CAROUSEL
+========================================= */
 
-const artworks = Array.from(
-    document.querySelectorAll(".artwork img")
-);
+document.addEventListener("DOMContentLoaded", () => {
 
-const lightbox = document.getElementById("lightbox");
-const lightboxImage = document.getElementById("lightbox-image");
-const lightboxCaption = document.getElementById("lightbox-caption");
-const closeButton = document.getElementById("lightbox-close");
+    const artworks = Array.from(
+        document.querySelectorAll(".artwork img")
+    );
 
-const sliderTrack = document.getElementById("slider-track");
-const prevImage = document.getElementById("prev-image");
-const nextImage = document.getElementById("next-image");
-
-let currentIndex = 0;
-
-
-/* ========================================
-   OIL PASTEL 기존 캡션
-
-   Color Pencil은 HTML의 data-caption을
-   우선해서 사용하기 때문에 여기에 영향 없음
-======================================== */
-
-const captions = [
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "22 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm",
-    "24 August 2026 - Oil pastel on paper 44 × 32 cm"
-];
-
-
-/* ========================================
-   이전 / 현재 / 다음 이미지 준비
-======================================== */
-
-function prepareSlides() {
-
-    if (!sliderTrack || !prevImage || !nextImage) return;
+    /* 상세페이지가 아닌 경우 아무것도 실행하지 않음 */
     if (artworks.length === 0) return;
 
-    const prevIndex =
-        (currentIndex - 1 + artworks.length) %
-        artworks.length;
 
-    const nextIndex =
-        (currentIndex + 1) %
-        artworks.length;
+    const lightbox =
+        document.getElementById("lightbox");
 
-    prevImage.src =
-        artworks[prevIndex].src;
+    const lightboxImage =
+        document.getElementById("lightbox-image");
 
-    lightboxImage.src =
-        artworks[currentIndex].src;
+    const lightboxCaption =
+        document.getElementById("lightbox-caption");
 
-    nextImage.src =
-        artworks[nextIndex].src;
+    const closeButton =
+        document.getElementById("lightbox-close");
 
+    const sliderTrack =
+        document.getElementById("slider-track");
 
-    /* 항상 가운데 작품으로 초기화 */
+    const prevImage =
+        document.getElementById("prev-image");
 
-    sliderTrack.style.transition = "none";
+    const nextImage =
+        document.getElementById("next-image");
 
-    sliderTrack.style.transform =
-        "translateX(-33.3333%)";
-}
-
-
-/* ========================================
-   확대 화면 작품 업데이트
-======================================== */
-
-function showArtwork(index) {
-
-    currentIndex = index;
-
-    lightboxImage.src =
-        artworks[currentIndex].src;
+    const thumbnailContainer =
+        document.getElementById("lightbox-thumbnails");
 
 
-    /* 제목 */
+    let currentIndex = 0;
 
-    const title =
-        artworks[currentIndex].dataset.title || "";
-
-
-    /* 캡션
-
-       1순위 = HTML의 data-caption
-       2순위 = 기존 Oil Pastel captions 배열
-    */
-
-    const caption =
-        artworks[currentIndex].dataset.caption ||
-        captions[currentIndex] ||
-        "";
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let moved = false;
 
 
-    /* 제목만 Bold */
+    /* =====================================
+       이미지 3장 준비
+    ===================================== */
 
-    lightboxCaption.innerHTML =
-        (title
-            ? `<strong class="caption-title">${title}</strong>`
-            : ""
-        ) + caption;
+    function prepareSlides() {
+
+        const total = artworks.length;
+
+        const previousIndex =
+            (currentIndex - 1 + total) % total;
+
+        const nextIndex =
+            (currentIndex + 1) % total;
 
 
-    /* 아래 썸네일 현재 작품 표시 */
+        prevImage.src =
+            artworks[previousIndex].src;
 
-    document
-        .querySelectorAll(".lightbox-thumb")
-        .forEach((thumb, i) => {
+        lightboxImage.src =
+            artworks[currentIndex].src;
+
+        nextImage.src =
+            artworks[nextIndex].src;
+
+
+        sliderTrack.style.transition = "none";
+
+        sliderTrack.style.transform =
+            "translateX(-33.333333%)";
+    }
+
+
+    /* =====================================
+       캡션
+    ===================================== */
+
+    function updateCaption() {
+
+        const artwork =
+            artworks[currentIndex];
+
+        const title =
+            artwork.dataset.title || "";
+
+        const caption =
+            artwork.dataset.caption || "";
+
+
+        if (title) {
+
+            lightboxCaption.innerHTML =
+                `<strong class="caption-title">${title}</strong>` +
+                `<span>${caption}</span>`;
+
+        } else {
+
+            lightboxCaption.textContent =
+                caption;
+        }
+    }
+
+
+    /* =====================================
+       현재 썸네일
+    ===================================== */
+
+    function updateThumbnail() {
+
+        const thumbs =
+            document.querySelectorAll(
+                ".lightbox-thumb"
+            );
+
+        thumbs.forEach((thumb, index) => {
 
             thumb.classList.toggle(
                 "active-thumb",
-                i === currentIndex
+                index === currentIndex
             );
-
         });
-
-
-    /* 모바일 슬라이더 갱신 */
-
-    prepareSlides();
-}
-
-
-/* ========================================
-   작품 클릭 → 확대
-======================================== */
-
-artworks.forEach((image, index) => {
-
-    image.style.cursor = "pointer";
-
-    image.addEventListener("click", () => {
-
-        lightbox.classList.add("active");
-
-        showArtwork(index);
-
-    });
-
-});
-
-
-/* ========================================
-   닫기
-======================================== */
-
-if (closeButton) {
-
-    closeButton.addEventListener("click", () => {
-
-        lightbox.classList.remove("active");
-
-    });
-
-}
-
-
-/* 회색 바깥 영역 클릭 */
-
-if (lightbox) {
-
-    lightbox.addEventListener("click", (event) => {
-
-        if (event.target === lightbox) {
-
-            lightbox.classList.remove("active");
-
-        }
-
-    });
-
-}
-
-
-/* ========================================
-   키보드 이동
-======================================== */
-
-document.addEventListener("keydown", (event) => {
-
-    if (!lightbox) return;
-
-    if (!lightbox.classList.contains("active")) {
-        return;
     }
 
 
-    /* 다음 */
+    /* =====================================
+       작품 표시
+    ===================================== */
 
-    if (event.key === "ArrowRight") {
+    function showArtwork(index) {
 
-        const nextIndex =
+        currentIndex = index;
+
+        prepareSlides();
+        updateCaption();
+        updateThumbnail();
+    }
+
+
+    /* =====================================
+       작품 클릭 → 확대
+    ===================================== */
+
+    artworks.forEach((image, index) => {
+
+        image.addEventListener(
+            "click",
+            () => {
+
+                lightbox.classList.add(
+                    "active"
+                );
+
+                document.body.classList.add(
+                    "lightbox-open"
+                );
+
+                showArtwork(index);
+            }
+        );
+    });
+
+
+    /* =====================================
+       닫기
+    ===================================== */
+
+    function closeLightbox() {
+
+        lightbox.classList.remove(
+            "active"
+        );
+
+        document.body.classList.remove(
+            "lightbox-open"
+        );
+    }
+
+
+    closeButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            closeLightbox();
+        }
+    );
+
+
+    /* 배경 클릭 */
+
+    lightbox.addEventListener(
+        "click",
+        (event) => {
+
+            if (event.target === lightbox) {
+
+                closeLightbox();
+            }
+        }
+    );
+
+
+    /* =====================================
+       다음 작품
+    ===================================== */
+
+    function nextArtwork() {
+
+        currentIndex =
             (currentIndex + 1) %
             artworks.length;
 
-        showArtwork(nextIndex);
+        showArtwork(currentIndex);
     }
 
 
-    /* 이전 */
+    /* =====================================
+       이전 작품
+    ===================================== */
 
-    if (event.key === "ArrowLeft") {
+    function previousArtwork() {
 
-        const prevIndex =
-            (currentIndex - 1 + artworks.length) %
+        currentIndex =
+            (
+                currentIndex -
+                1 +
+                artworks.length
+            ) %
             artworks.length;
 
-        showArtwork(prevIndex);
+        showArtwork(currentIndex);
     }
 
 
-    /* 닫기 */
+    /* =====================================
+       키보드
+    ===================================== */
 
-    if (event.key === "Escape") {
-
-        lightbox.classList.remove("active");
-
-    }
-
-});
-
-
-/* ========================================
-   아래 작은 썸네일 만들기
-======================================== */
-
-const thumbnailContainer =
-    document.createElement("div");
-
-thumbnailContainer.className =
-    "lightbox-thumbnails";
-
-
-artworks.forEach((image, index) => {
-
-    const thumb =
-        document.createElement("img");
-
-    thumb.src = image.src;
-
-    thumb.className =
-        "lightbox-thumb";
-
-
-    thumb.addEventListener("click", (event) => {
-
-        /* 클릭이 lightbox 바깥 클릭으로 인식되지 않게 */
-
-        event.stopPropagation();
-
-        showArtwork(index);
-
-    });
-
-
-    thumbnailContainer.appendChild(thumb);
-
-});
-
-
-const lightboxContent =
-    document.querySelector(".lightbox-content");
-
-if (lightboxContent) {
-
-    lightboxContent.appendChild(
-        thumbnailContainer
-    );
-
-}
-
-
-/* ========================================
-   MOBILE 3-SLIDE CAROUSEL
-======================================== */
-
-let swipeStartX = 0;
-let swipeCurrentX = 0;
-
-let swiping = false;
-
-
-/* 손가락을 처음 댔을 때 */
-
-if (sliderTrack) {
-
-    sliderTrack.addEventListener(
-        "touchstart",
+    document.addEventListener(
+        "keydown",
         (event) => {
 
-            swipeStartX =
-                event.touches[0].clientX;
+            if (
+                !lightbox.classList.contains(
+                    "active"
+                )
+            ) {
+                return;
+            }
 
-            swipeCurrentX =
-                swipeStartX;
 
-            swiping = true;
+            if (
+                event.key === "ArrowRight"
+            ) {
+
+                nextArtwork();
+            }
 
 
-            /* 손가락을 따라 바로 움직이도록 */
+            if (
+                event.key === "ArrowLeft"
+            ) {
+
+                previousArtwork();
+            }
+
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeLightbox();
+            }
+        }
+    );
+
+
+    /* =====================================
+       작은 썸네일 생성
+    ===================================== */
+
+    thumbnailContainer.innerHTML = "";
+
+
+    artworks.forEach(
+        (image, index) => {
+
+            const thumb =
+                document.createElement(
+                    "img"
+                );
+
+            thumb.src = image.src;
+
+            thumb.className =
+                "lightbox-thumb";
+
+
+            thumb.addEventListener(
+                "click",
+                (event) => {
+
+                    event.stopPropagation();
+
+                    showArtwork(index);
+                }
+            );
+
+
+            thumbnailContainer.appendChild(
+                thumb
+            );
+        }
+    );
+
+
+    /* =====================================
+       드래그 시작
+       아이폰 + 마우스
+    ===================================== */
+
+    sliderTrack.addEventListener(
+        "pointerdown",
+        (event) => {
+
+            isDragging = true;
+            moved = false;
+
+            startX =
+                event.clientX;
+
+            currentX =
+                startX;
+
 
             sliderTrack.style.transition =
                 "none";
 
-        },
-        { passive: true }
-    );
 
+            try {
 
-    /* ------------------------------------
-       손가락을 움직이는 동안
-    ------------------------------------ */
+                sliderTrack.setPointerCapture(
+                    event.pointerId
+                );
 
-    sliderTrack.addEventListener(
-        "touchmove",
-        (event) => {
-
-            if (!swiping) return;
-
-
-            swipeCurrentX =
-                event.touches[0].clientX;
-
-
-            const moveX =
-                swipeCurrentX - swipeStartX;
-
-
-            /*
-                가운데 위치 -33.3333%를 기준으로
-                손가락 이동 px만큼 같이 움직임
-            */
-
-            sliderTrack.style.transform =
-                `translateX(calc(-33.3333% + ${moveX}px))`;
-
-        },
-        { passive: true }
-    );
-
-
-    /* ------------------------------------
-       손을 놓았을 때
-    ------------------------------------ */
-
-    sliderTrack.addEventListener(
-        "touchend",
-        () => {
-
-            if (!swiping) return;
-
-            swiping = false;
-
-
-            const moveX =
-                swipeCurrentX - swipeStartX;
-
-
-            sliderTrack.style.transition =
-                "transform 0.32s ease";
-
-
-            /* ============================
-               왼쪽으로 밀기 → 다음 작품
-            ============================ */
-
-            if (moveX < -60) {
-
-                sliderTrack.style.transform =
-                    "translateX(-66.6666%)";
-
-
-                setTimeout(() => {
-
-                    currentIndex =
-                        (currentIndex + 1) %
-                        artworks.length;
-
-
-                    showArtwork(currentIndex);
-
-                }, 320);
-
-            }
-
-
-            /* ============================
-               오른쪽으로 밀기 → 이전 작품
-            ============================ */
-
-            else if (moveX > 60) {
-
-                sliderTrack.style.transform =
-                    "translateX(0%)";
-
-
-                setTimeout(() => {
-
-                    currentIndex =
-                        (
-                            currentIndex -
-                            1 +
-                            artworks.length
-                        ) %
-                        artworks.length;
-
-
-                    showArtwork(currentIndex);
-
-                }, 320);
-
-            }
-
-
-            /* ============================
-               조금만 움직임 → 원위치
-            ============================ */
-
-            else {
-
-                sliderTrack.style.transform =
-                    "translateX(-33.3333%)";
-
-            }
-
-        },
-        { passive: true }
-    );
-
-
-    /* 손가락 동작이 중간에 취소됐을 경우 */
-
-    sliderTrack.addEventListener(
-        "touchcancel",
-        () => {
-
-            swiping = false;
-
-            sliderTrack.style.transition =
-                "transform 0.32s ease";
-
-            sliderTrack.style.transform =
-                "translateX(-33.3333%)";
-
+            } catch (error) {}
         }
     );
 
-}
+
+    /* =====================================
+       드래그 중
+    ===================================== */
+
+    sliderTrack.addEventListener(
+        "pointermove",
+        (event) => {
+
+            if (!isDragging) return;
+
+
+            currentX =
+                event.clientX;
+
+
+            const distance =
+                currentX - startX;
+
+
+            if (
+                Math.abs(distance) > 4
+            ) {
+
+                moved = true;
+            }
+
+
+            sliderTrack.style.transform =
+                `translateX(calc(-33.333333% + ${distance}px))`;
+        }
+    );
+
+
+    /* =====================================
+       드래그 종료
+    ===================================== */
+
+    function finishDrag(event) {
+
+        if (!isDragging) return;
+
+        isDragging = false;
+
+
+        const distance =
+            currentX - startX;
+
+
+        sliderTrack.style.transition =
+            "transform 0.28s ease";
+
+
+        /* -------------------------------
+           다음 작품
+        ------------------------------- */
+
+        if (distance < -60) {
+
+            sliderTrack.style.transform =
+                "translateX(-66.666666%)";
+
+
+            setTimeout(() => {
+
+                currentIndex =
+                    (currentIndex + 1) %
+                    artworks.length;
+
+                showArtwork(
+                    currentIndex
+                );
+
+            }, 280);
+        }
+
+
+        /* -------------------------------
+           이전 작품
+        ------------------------------- */
+
+        else if (distance > 60) {
+
+            sliderTrack.style.transform =
+                "translateX(0%)";
+
+
+            setTimeout(() => {
+
+                currentIndex =
+                    (
+                        currentIndex -
+                        1 +
+                        artworks.length
+                    ) %
+                    artworks.length;
+
+                showArtwork(
+                    currentIndex
+                );
+
+            }, 280);
+        }
+
+
+        /* -------------------------------
+           충분히 안 밀었으면 복귀
+        ------------------------------- */
+
+        else {
+
+            sliderTrack.style.transform =
+                "translateX(-33.333333%)";
+        }
+
+
+        if (event) {
+
+            try {
+
+                sliderTrack.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {}
+        }
+    }
+
+
+    sliderTrack.addEventListener(
+        "pointerup",
+        finishDrag
+    );
+
+
+    sliderTrack.addEventListener(
+        "pointercancel",
+        finishDrag
+    );
+
+});

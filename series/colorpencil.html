@@ -1,116 +1,220 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Color Pencil - Han Sumin</title>
 
-    <link rel="stylesheet" href="../style.css">
+    <link
+        rel="stylesheet"
+        href="../style.css"
+    >
+
 </head>
 
 
-<body>
+<body class="series-page">
 
-    <!-- 상단 -->
+
     <header class="series-header">
 
-        <a href="../index.html" class="series-back">
-            ←
+        <a
+            class="series-name"
+            href="../index.html"
+        >
+
+            <div class="name-ko">
+                한수민
+            </div>
+
+            <div class="name-en">
+                Han Sumin
+            </div>
+
         </a>
 
-        <div class="series-title">
+
+        <div class="series-category">
             DRAWING / COLOR PENCIL
         </div>
 
     </header>
 
 
-    <!-- 작품 모아보기 -->
+    <main class="series-gallery">
 
-        <!-- 최신 작품이 위 -->
 
-   <main class="series-gallery">
+        <!-- 최신 작품 -->
 
-    <figure class="artwork">
-        <img
-            src="../images/drawing/colorpencil/colorpencil_05.jpg"
-            alt=""
-            data-title="Minji"
-            data-caption="24 August 2026 - Color pencil on paper 22.9 × 30.5 cm"
-        >    
-    </figure>
+        <figure class="artwork">
 
-    <figure class="artwork">
-        <img
-            src="../images/drawing/colorpencil/colorpencil_04.jpg"
-            alt=""
-            data-title="Yunchae"
-            data-caption="14 February 2025 - Color pencil on paper 27.9 × 35.6 cm"
+            <img
+                src="../images/drawing/colorpencil/colorpencil_05.jpg"
+                alt=""
+                data-title="Portrait"
+                data-caption="21 August 2026 - Color pencil on paper 21 × 29.7 cm"
+            >
+
+        </figure>
+
+
+        <figure class="artwork">
+
+            <img
+                src="../images/drawing/colorpencil/colorpencil_04.jpg"
+                alt=""
+                data-title=""
+                data-caption="21 August 2026 - Color pencil on paper 21 × 29.7 cm"
+            >
+
+        </figure>
+
+
+        <figure class="artwork">
+
+            <img
+                src="../images/drawing/colorpencil/colorpencil_03.jpg"
+                alt=""
+                data-title=""
+                data-caption="21 August 2026 - Color pencil on paper 21 × 29.7 cm"
+            >
+
+        </figure>
+
+
+        <figure class="artwork">
+
+            <img
+                src="../images/drawing/colorpencil/colorpencil_02.jpg"
+                alt=""
+                data-title=""
+                data-caption="21 August 2026 - Color pencil on paper 21 × 29.7 cm"
+            >
+
+        </figure>
+
+
+        <figure class="artwork">
+
+            <img
+                src="../images/drawing/colorpencil/colorpencil_01.jpg"
+                alt=""
+                data-title=""
+                data-caption="21 August 2026 - Color pencil on paper 21 × 29.7 cm"
+            >
+
+        </figure>
+
+
+    </main>
+
+
+
+    <!-- =================================
+         LIGHTBOX
+    ================================== -->
+
+    <div
+        class="lightbox"
+        id="lightbox"
+    >
+
+
+        <button
+            class="lightbox-close"
+            id="lightbox-close"
+            type="button"
+            aria-label="Close"
         >
-    </figure>
-
-    <figure class="artwork">
-        <img
-            src="../images/drawing/colorpencil/colorpencil_03.jpg"
-            alt=""
-            data-title="Kyungmi"
-            data-caption="13 February 2025 - Color pencil on paper 27.9 × 35.6 cm"
-        >
-    </figure>
-
-    <figure class="artwork">
-        <img
-            src="../images/drawing/colorpencil/colorpencil_02.jpg"
-            alt=""
-            data-title="Kyungmi"
-            data-caption="13 February 2025 - Color pencil on paper 27.9 × 35.6 cm"
-        >
-    </figure>
-
-    <figure class="artwork">
-        <img
-            src="../images/drawing/colorpencil/colorpencil_01.jpg"
-            alt=""
-            data-title="Kyungmi"
-            data-caption="11 February 2025 - Color pencil on paper 27.9 × 35.6 cm"
-        >
-    </figure>
-
-</main>
+            ×
+        </button>
 
 
-    <!-- 작품 클릭했을 때 확대 화면 -->
-    <div class="lightbox-content">
+        <div class="lightbox-content">
 
-    <div class="slider-window">
 
-        <div class="slider-track" id="slider-track">
+            <div class="slider-window">
 
-            <div class="slide">
-                <img id="prev-image" class="lightbox-image" src="" alt="">
+                <div
+                    class="slider-track"
+                    id="slider-track"
+                >
+
+
+                    <!-- 이전 -->
+
+                    <div class="slide">
+
+                        <img
+                            class="lightbox-image"
+                            id="prev-image"
+                            src=""
+                            alt=""
+                        >
+
+                    </div>
+
+
+                    <!-- 현재 -->
+
+                    <div class="slide">
+
+                        <img
+                            class="lightbox-image"
+                            id="lightbox-image"
+                            src=""
+                            alt=""
+                        >
+
+                    </div>
+
+
+                    <!-- 다음 -->
+
+                    <div class="slide">
+
+                        <img
+                            class="lightbox-image"
+                            id="next-image"
+                            src=""
+                            alt=""
+                        >
+
+                    </div>
+
+
+                </div>
+
             </div>
 
-            <div class="slide">
-                <img id="lightbox-image" class="lightbox-image" src="" alt="">
-            </div>
 
-            <div class="slide">
-                <img id="next-image" class="lightbox-image" src="" alt="">
-            </div>
+            <div
+                class="lightbox-caption"
+                id="lightbox-caption"
+            ></div>
+
+
+            <div
+                class="lightbox-thumbnails"
+                id="lightbox-thumbnails"
+            ></div>
+
 
         </div>
 
     </div>
 
-    <div class="lightbox-caption" id="lightbox-caption">
-    </div>
-
-</div>
-
 
     <script src="../script.js"></script>
+
 
 </body>
 

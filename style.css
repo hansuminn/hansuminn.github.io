@@ -228,243 +228,599 @@ body {
 .tile:hover .tile-overlay {
     opacity: 1;
 }
+
+
+
+
 /* ========================================
-   SERIES PAGE
+   CAPTION
 ======================================== */
 
-.series-header {
-    padding: 28px 38px 35px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.series-name {
-    color: #111111;
-    text-decoration: none;
-}
-
-.series-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    font-size: 12px;
-    letter-spacing: 0.5px;
-}
-
-.series-nav a {
-    color: #111111;
-    text-decoration: none;
-}
-
-.series-nav a:hover {
-    text-decoration: underline;
-}
-
-
-/* 작품 영역 */
-
-/* 작품들을 타일처럼 모아서 보기 */
-
-.series-gallery {
-    padding: 0 38px 60px;
-
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-
-    gap: 14px;
-}
-
-.artwork {
-    margin: 0;
-
-    width: 100%;
-    aspect-ratio: 4 / 3;
-
-    background: #ffffff;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
-}
-
-.artwork img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-
-    display: block;
-}
-/* =========================
-   작품 확대 화면
-========================= */
-
-.lightbox {
-    position: fixed;
-    inset: 0;
-
-    background: #eeeeee;
-
-    display: none;
-
-    z-index: 1000;
-
-    overflow-y: auto;
-}
-
-
-/* 확대창이 열렸을 때 */
-
-.lightbox.active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-/* 작품 + 설명 */
-
-.lightbox-content {
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding: 50px 70px;
-}
-
-
-/* 확대된 작품 */
-
-.lightbox-image {
-    max-width: 70vw;
-    max-height: 68vh;
-
-    width: auto;
-    height: auto;
-
-    object-fit: contain;
-    display: block;
-}
-
-
-/* 작품 정보 */
-
 .lightbox-caption {
-    margin-top: 16px;
+    margin-top: 15px;
+
+    min-height: 18px;
 
     font-size: 12px;
     font-weight: 400;
 
-    color: #111111;
+    color: #111;
+}
+
+.caption-title {
+    margin-right: 12px;
+    font-weight: 600;
 }
 
 
-/* 오른쪽 위 X 버튼 */
-
-.lightbox-close {
-    position: absolute;
-
-    top: 24px;
-    right: 28px;
-
-    border: 0;
-    background: transparent;
-
-    font-size: 28px;
-    font-weight: 300;
-
-    cursor: pointer;
-}
-/* ---------- LIGHTBOX THUMBNAILS ---------- */
+/* ========================================
+   THUMBNAILS
+======================================== */
 
 .lightbox-thumbnails {
-    margin-top: 18px;
+    margin-top: 16px;
+
+    max-width: 85vw;
 
     display: flex;
     gap: 6px;
 
-    max-width: 85vw;
-
     overflow-x: auto;
 
-    padding-bottom: 4px;
+    padding-bottom: 5px;
 }
 
 .lightbox-thumb {
     width: 38px;
     height: 30px;
 
+    flex-shrink: 0;
+
     object-fit: cover;
 
-    opacity: 0.45;
-
-    cursor: pointer;
+    opacity: 0.4;
 
     border: 1px solid transparent;
+
+    cursor: pointer;
+}
+
+.lightbox-thumb.active-thumb {
+    opacity: 1;
+    border-color: #777;
 }
 
 .lightbox-thumb:hover {
     opacity: 0.8;
 }
 
-.lightbox-thumb.active-thumb {
-    opacity: 1;
 
-    border-color: #777777;
-}
-.caption-title {
-    margin-right: 12px;
-}
-.lightbox-image {
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-drag: none;
-}
-/* =========================
-   3-SLIDE CAROUSEL
-========================= */
+/* ========================================
+   MOBILE
+======================================== */
 
-.slider-window {
+@media (max-width: 600px) {
+
+    .series-header {
+        padding: 20px;
+    }
+
+    .series-gallery {
+        padding: 0 12px 40px;
+
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 8px;
+    }
+
+    .lightbox-content {
+        padding-top: 60px;
+    }
+
+    .lightbox-image {
+        max-width: 82vw;
+        max-height: 58vh;
+    }
+
+    .lightbox-caption {
+        width: 86vw;
+
+        font-size: 11px;
+        line-height: 1.5;
+
+        text-align: center;
+    }
+
+    .lightbox-thumbnails {
+        max-width: 86vw;
+    }
+
+    .lightbox-thumb {
+        width: 32px;
+        height: 26px;
+    }
+}
+/* =========================================
+   SERIES PAGE
+========================================= */
+
+.series-page {
+    margin: 0;
+    background: #ffffff;
+    color: #111111;
+}
+
+
+/* 상단 */
+
+.series-header {
+    box-sizing: border-box;
+
     width: 100%;
+
+    padding: 26px 32px 32px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+
+.series-name {
+    color: #111111;
+    text-decoration: none;
+}
+
+
+.series-name .name-ko {
+    font-size: 15px;
+    line-height: 1.1;
+}
+
+
+.series-name .name-en {
+    margin-top: 2px;
+
+    font-size: 22px;
+    line-height: 1;
+}
+
+
+.series-category {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+/* =========================================
+   SERIES GRID
+   가로 5개
+========================================= */
+
+.series-gallery {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding:
+        0
+        32px
+        60px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.artwork {
+    margin: 0;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #ffffff;
+}
+
+
+.artwork img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   LIGHTBOX
+========================================= */
+
+body.lightbox-open {
     overflow: hidden;
 }
 
-.slider-track {
+
+.lightbox {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+    
+    .lightbox.active {
     display: flex;
-    width: 300%;
-
-    transform: translateX(-33.3333%);
-
-    transition: transform 0.28s ease;
+    align-items: center;
+    justify-content: center;
 }
+
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    background: #eeeeee;
+}
+
+
+.lightbox.active {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+.lightbox-content {
+    box-sizing: border-box;
+
+    width: 100%;
+    height: 100%;
+
+    padding:
+        52px
+        0
+        24px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+/* =========================================
+   CLOSE
+========================================= */
+
+.lightbox-close {
+    position: absolute;
+
+    top: 18px;
+    right: 24px;
+
+    z-index: 10001;
+
+    padding: 4px 8px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: #111111;
+
+    font-family: inherit;
+
+    font-size: 28px;
+
+    font-weight: 300;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   SLIDER WINDOW
+========================================= */
+
+.slider-window {
+    position: relative;
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    overflow: hidden;
+
+    touch-action: pan-y;
+}
+
+
+/* =========================================
+   3 SLIDES
+========================================= */
+
+.slider-track {
+    width: 300%;
+    height: 100%;
+
+    display: flex;
+
+    transform:
+        translateX(-33.333333%);
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: pan-y;
+
+    cursor: grab;
+}
+
+
+.slider-track:active {
+    cursor: grabbing;
+}
+
 
 .slide {
-    width: 33.3333%;
+    box-sizing: border-box;
+
+    width: 33.333333%;
+    height: 100%;
+
+    flex: 0 0 33.333333%;
 
     display: flex;
-    justify-content: center;
-    align-items: center;
 
-    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 4vw;
 }
 
-.slide .lightbox-image {
-    max-width: 70vw;
-    max-height: 68vh;
+
+.lightbox-image {
+    display: block;
+
+    max-width: 72vw;
+    max-height: 62vh;
 
     width: auto;
     height: auto;
 
     object-fit: contain;
 
-    display: block;
+    pointer-events: none;
+
     user-select: none;
+
+    -webkit-user-select: none;
     -webkit-user-drag: none;
+}
+
+
+/* =========================================
+   CAPTION
+========================================= */
+
+.lightbox-caption {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    flex: 0 0 auto;
+
+    padding:
+        12px
+        24px
+        0;
+
+    color: #111111;
+
+    font-size: 12px;
+    font-weight: 400;
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+.caption-title {
+    margin-right: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================
+   THUMBNAILS
+========================================= */
+
+.lightbox-thumbnails {
+    box-sizing: border-box;
+
+    max-width: 86vw;
+
+    flex: 0 0 auto;
+
+    margin-top: 13px;
+
+    padding-bottom: 3px;
+
+    display: flex;
+
+    gap: 6px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    scrollbar-width: none;
+}
+
+
+.lightbox-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+
+.lightbox-thumb {
+    box-sizing: border-box;
+
+    width: 38px;
+    height: 30px;
+
+    flex: 0 0 auto;
+
+    display: block;
+
+    object-fit: cover;
+
+    border: 1px solid transparent;
+
+    opacity: 0.4;
+
+    cursor: pointer;
+}
+
+
+.lightbox-thumb.active-thumb {
+    opacity: 1;
+
+    border-color: #777777;
+}
+
+
+@media (hover: hover) {
+
+    .lightbox-thumb:hover {
+        opacity: 0.8;
+    }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .series-header {
+        padding:
+            18px
+            14px
+            24px;
+    }
+
+
+    .series-name .name-ko {
+        font-size: 12px;
+    }
+
+
+    .series-name .name-en {
+        font-size: 18px;
+    }
+
+
+    .series-category {
+        font-size: 10px;
+    }
+
+
+    .series-gallery {
+        padding:
+            0
+            10px
+            40px;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+    }
+
+
+    .lightbox-content {
+        padding:
+            52px
+            0
+            18px;
+    }
+
+
+    .slide {
+        padding:
+            8px
+            6vw;
+    }
+
+
+    .lightbox-image {
+        max-width: 86vw;
+        max-height: 58vh;
+    }
+
+
+    .lightbox-caption {
+        padding:
+            10px
+            20px
+            0;
+
+        font-size: 11px;
+    }
+
+
+    .caption-title {
+        margin-right: 9px;
+    }
+
+
+    .lightbox-thumbnails {
+        max-width: 88vw;
+
+        margin-top: 11px;
+    }
+
+
+    .lightbox-thumb {
+        width: 32px;
+        height: 25px;
+    }
+
+
+    .lightbox-close {
+        top: 14px;
+        right: 14px;
+    }
 }
