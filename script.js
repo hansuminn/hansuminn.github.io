@@ -47,6 +47,10 @@ lightboxCaption.innerHTML =
 
     document.querySelectorAll(".lightbox-thumb").forEach((thumb, i) => {
         thumb.classList.toggle("active-thumb", i === currentIndex);
+
+            if (sliderTrack) {
+        prepareSlides();
+    }
     });
 }
 
@@ -119,59 +123,84 @@ artworks.forEach((image, index) => {
 
 document.querySelector(".lightbox-content").appendChild(thumbnailContainer);
 /* =========================
-   DRAG SWIPE
+   3-SLIDE MOBILE CAROUSEL
 ========================= */
 
-let dragStartX = 0;
-let dragCurrentX = 0;
-let isDragging = false;
+const sliderTrack = document.getElementById("slider-track");
+const prevImage = document.getElementById("prev-image");
+const nextImage = document.getElementById("next-image");
 
-lightboxImage.addEventListener("touchstart", (event) => {
-    if (!lightbox.classList.contains("active")) return;
+let swipeStartX = 0;
+let swipeCurrentX = 0;
+let swiping = false;
 
-    isDragging = true;
 
-    dragStartX = event.touches[0].clientX;
-    dragCurrentX = dragStartX;
+/* 이전 / 현재 / 다음 이미지 준비 */
 
-    lightboxImage.style.transition = "none";
+function prepareSlides() {
+
+    const prevIndex =
+        (currentIndex - 1 + artworks.length) % artworks.length;
+
+    const nextIndex =
+        (currentIndex + 1) % artworks.length;
+
+    prevImage.src = artworks[prevIndex].src;
+    lightboxImage.src = artworks[currentIndex].src;
+    nextImage.src = artworks[nextIndex].src;
+
+    sliderTrack.style.transition = "none";
+    sliderTrack.style.transform = "translateX(-33.3333%)";
+}
+
+
+/* 손가락을 댔을 때 */
+
+sliderTrack.addEventListener("touchstart", (event) => {
+
+    swipeStartX = event.touches[0].clientX;
+    swipeCurrentX = swipeStartX;
+
+    swiping = true;
+
+    sliderTrack.style.transition = "none";
 });
 
 
-lightboxImage.addEventListener("touchmove", (event) => {
-    if (!isDragging) return;
+/* 손가락을 움직이는 동안 */
 
-    dragCurrentX = event.touches[0].clientX;
+sliderTrack.addEventListener("touchmove", (event) => {
 
-    const moveX = dragCurrentX - dragStartX;
+    if (!swiping) return;
 
-    lightboxImage.style.transform =
-        `translateX(${moveX}px)`;
+    swipeCurrentX = event.touches[0].clientX;
 
-    lightboxImage.style.opacity =
-        Math.max(0.55, 1 - Math.abs(moveX) / 500);
+    const moveX = swipeCurrentX - swipeStartX;
+
+    sliderTrack.style.transform =
+        `translateX(calc(-33.3333% + ${moveX}px))`;
 });
 
 
-lightboxImage.addEventListener("touchend", () => {
-    if (!isDragging) return;
+/* 손을 놓았을 때 */
 
-    isDragging = false;
+sliderTrack.addEventListener("touchend", () => {
 
-    const moveX = dragCurrentX - dragStartX;
+    if (!swiping) return;
 
-    lightboxImage.style.transition =
-        "transform 0.28s ease, opacity 0.28s ease";
+    swiping = false;
+
+    const moveX = swipeCurrentX - swipeStartX;
+
+    sliderTrack.style.transition = "transform 0.28s ease";
 
 
-    /* 왼쪽으로 충분히 밀었을 때 → 다음 작품 */
+    /* 왼쪽으로 넘김 → 다음 작품 */
 
-    if (moveX < -70) {
+    if (moveX < -60) {
 
-        lightboxImage.style.transform =
-            "translateX(-120%)";
-
-        lightboxImage.style.opacity = "0";
+        sliderTrack.style.transform =
+            "translateX(-66.6666%)";
 
         setTimeout(() => {
 
@@ -180,39 +209,18 @@ lightboxImage.addEventListener("touchend", () => {
 
             showArtwork(currentIndex);
 
-            lightboxImage.style.transition = "none";
-            lightboxImage.style.transform =
-                "translateX(120%)";
-
-            requestAnimationFrame(() => {
-
-                requestAnimationFrame(() => {
-
-                    lightboxImage.style.transition =
-                        "transform 0.28s ease, opacity 0.28s ease";
-
-                    lightboxImage.style.transform =
-                        "translateX(0)";
-
-                    lightboxImage.style.opacity = "1";
-
-                });
-
-            });
+            prepareSlides();
 
         }, 280);
-
     }
 
 
-    /* 오른쪽으로 충분히 밀었을 때 → 이전 작품 */
+    /* 오른쪽으로 넘김 → 이전 작품 */
 
-    else if (moveX > 70) {
+    else if (moveX > 60) {
 
-        lightboxImage.style.transform =
-            "translateX(120%)";
-
-        lightboxImage.style.opacity = "0";
+        sliderTrack.style.transform =
+            "translateX(0%)";
 
         setTimeout(() => {
 
@@ -222,40 +230,18 @@ lightboxImage.addEventListener("touchend", () => {
 
             showArtwork(currentIndex);
 
-            lightboxImage.style.transition = "none";
-            lightboxImage.style.transform =
-                "translateX(-120%)";
-
-            requestAnimationFrame(() => {
-
-                requestAnimationFrame(() => {
-
-                    lightboxImage.style.transition =
-                        "transform 0.28s ease, opacity 0.28s ease";
-
-                    lightboxImage.style.transform =
-                        "translateX(0)";
-
-                    lightboxImage.style.opacity = "1";
-
-                });
-
-            });
+            prepareSlides();
 
         }, 280);
-
     }
 
 
-    /* 조금만 밀었으면 원래 자리로 복귀 */
+    /* 조금만 움직였으면 다시 가운데 */
 
     else {
 
-        lightboxImage.style.transform =
-            "translateX(0)";
-
-        lightboxImage.style.opacity = "1";
-
+        sliderTrack.style.transform =
+            "translateX(-33.3333%)";
     }
 
 });

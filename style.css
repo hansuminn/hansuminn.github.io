@@ -427,3 +427,44 @@ body {
     user-select: none;
     -webkit-user-drag: none;
 }
+/* =========================
+   3-SLIDE CAROUSEL
+========================= */
+
+.slider-window {
+    width: 100%;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    width: 300%;
+
+    transform: translateX(-33.3333%);
+
+    transition: transform 0.28s ease;
+}
+
+.slide {
+    width: 33.3333%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.slide .lightbox-image {
+    max-width: 70vw;
+    max-height: 68vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
