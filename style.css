@@ -573,7 +573,7 @@ body.lightbox-open {
     display: flex;
 
     transform:
-        translateX(-33.333333%);
+        translateX(-100%);
 
     user-select: none;
 
@@ -585,27 +585,35 @@ body.lightbox-open {
 }
 
 
-.slider-track:active {
-    cursor: grabbing;
-}
-
-
-.slide {
-    box-sizing: border-box;
-
-    width: 33.333333%;
+.slider-track {
+    width: 100%;
     height: 100%;
-
-    flex: 0 0 33.333333%;
 
     display: flex;
 
+    transform: translateX(-100%);
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    touch-action: pan-y;
+
+    cursor: grab;
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+
+    flex: 0 0 100%;
+
+    display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 10px 4vw;
+    overflow: hidden;
+    padding: 0;
 }
-
 
 .lightbox-image {
     display: block;
@@ -734,13 +742,6 @@ body.lightbox-open {
 
 @media (max-width: 600px) {
 
-    .series-header {
-        padding:
-            18px
-            14px
-            24px;
-    }
-
 
     .series-name .name-ko {
         font-size: 12px;
@@ -827,5 +828,23 @@ body.lightbox-open {
 
 /* 가만히 있을 때 옆 작품이 보이지 않도록 */
 .slider-window {
+    position: relative;
+    width: 100%;
     overflow: hidden;
+    touch-action: pan-y;
+}
+/* 상세페이지 이름을 메인과 동일하게 */
+
+.series-name .name-ko {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.series-name .name-en {
+    margin-top: 5px;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 1.6px;
+    line-height: 1;
 }
