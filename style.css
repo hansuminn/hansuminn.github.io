@@ -1,0 +1,424 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #ffffff;
+    color: #111111;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+
+/* ---------- HEADER ---------- */
+
+.header {
+    width: 100%;
+
+    padding: 28px 38px 24px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* ---------- NAME ---------- */
+
+.name {
+    flex-shrink: 0;
+}
+
+.name-ko {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.name-en {
+    margin-top: 5px;
+
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 1.6px;
+
+    line-height: 1;
+}
+
+
+/* ---------- MENU ---------- */
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 22px;
+    margin-left: 40px;
+}
+
+.menu a {
+    color: #111111;
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 400;
+
+    white-space: nowrap;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------- GALLERY ---------- */
+
+.gallery {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: repeat(7, 1fr);
+
+    /* 타일 사이 간격 */
+    gap: 10px;
+
+    /* 갤러리 바깥 여백 */
+    padding: 10px 18px 30px;
+}
+
+
+/* ---------- TILE ---------- */
+
+.tile {
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    background: #f4f4f4;
+
+    border: 1px solid #e2e2e2;
+}
+
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 1000px) {
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 22px;
+
+        padding: 24px;
+    }
+
+    .menu {
+        margin-left: 0;
+
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        gap: 10px 18px;
+    }
+
+    .gallery {
+        grid-template-columns: repeat(4, 1fr);
+
+        gap: 8px;
+
+        padding: 8px 14px 25px;
+    }
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding: 20px;
+    }
+
+    .name-ko,
+    .name-en {
+        font-size: 19px;
+    }
+
+    .menu {
+        gap: 8px 14px;
+    }
+
+    .menu a {
+        font-size: 11px;
+    }
+
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 7px;
+
+        padding: 7px 10px 20px;
+    }
+}
+.tile {
+    overflow: hidden;
+    display: block;
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+/* ---------- TILE HOVER ---------- */
+
+.tile {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+
+    transition: filter 0.25s ease;
+}
+
+
+/* 글씨 */
+
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.tile-overlay span {
+    color: #111111;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+
+/* 커서 올렸을 때 */
+
+.tile:hover img {
+    filter: blur(8px);
+}
+
+.tile:hover .tile-overlay {
+    opacity: 1;
+}
+/* ========================================
+   SERIES PAGE
+======================================== */
+
+.series-header {
+    padding: 28px 38px 35px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.series-name {
+    color: #111111;
+    text-decoration: none;
+}
+
+.series-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.series-nav a {
+    color: #111111;
+    text-decoration: none;
+}
+
+.series-nav a:hover {
+    text-decoration: underline;
+}
+
+
+/* 작품 영역 */
+
+/* 작품들을 타일처럼 모아서 보기 */
+
+.series-gallery {
+    padding: 0 38px 60px;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+
+    gap: 14px;
+}
+
+.artwork {
+    margin: 0;
+
+    width: 100%;
+    aspect-ratio: 4 / 3;
+
+    background: #ffffff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.artwork img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+/* =========================
+   작품 확대 화면
+========================= */
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+
+    background: #eeeeee;
+
+    display: none;
+
+    z-index: 1000;
+
+    overflow-y: auto;
+}
+
+
+/* 확대창이 열렸을 때 */
+
+.lightbox.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* 작품 + 설명 */
+
+.lightbox-content {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 50px 70px;
+}
+
+
+/* 확대된 작품 */
+
+.lightbox-image {
+    max-width: 70vw;
+    max-height: 68vh;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+    display: block;
+}
+
+
+/* 작품 정보 */
+
+.lightbox-caption {
+    margin-top: 16px;
+
+    font-size: 12px;
+    font-weight: 400;
+
+    color: #111111;
+}
+
+
+/* 오른쪽 위 X 버튼 */
+
+.lightbox-close {
+    position: absolute;
+
+    top: 24px;
+    right: 28px;
+
+    border: 0;
+    background: transparent;
+
+    font-size: 28px;
+    font-weight: 300;
+
+    cursor: pointer;
+}
+/* ---------- LIGHTBOX THUMBNAILS ---------- */
+
+.lightbox-thumbnails {
+    margin-top: 18px;
+
+    display: flex;
+    gap: 6px;
+
+    max-width: 85vw;
+
+    overflow-x: auto;
+
+    padding-bottom: 4px;
+}
+
+.lightbox-thumb {
+    width: 38px;
+    height: 30px;
+
+    object-fit: cover;
+
+    opacity: 0.45;
+
+    cursor: pointer;
+
+    border: 1px solid transparent;
+}
+
+.lightbox-thumb:hover {
+    opacity: 0.8;
+}
+
+.lightbox-thumb.active-thumb {
+    opacity: 1;
+
+    border-color: #777777;
+}
+.caption-title {
+    margin-right: 12px;
+}
