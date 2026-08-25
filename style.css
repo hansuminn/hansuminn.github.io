@@ -304,6 +304,20 @@ body {
     .series-header {
         padding: 20px;
     }
+    
+        .series-name .name-ko {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    .series-name .name-en {
+        margin-top: 5px;
+        font-size: 20px;
+        font-weight: 400;
+        letter-spacing: 1.6px;
+        line-height: 1;
+    }
 
     .series-gallery {
         padding: 0 12px 40px;
