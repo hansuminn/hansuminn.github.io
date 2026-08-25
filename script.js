@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sliderTrack.style.transition = "none";
 
         sliderTrack.style.transform =
-            "translateX(-33.333333%)";
+            "translateX(-100%)";
     }
 
 
@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             sliderTrack.style.transform =
-                `translateX(calc(-33.333333% + ${distance}px))`;
+                `translateX(-100%) + ${distance}px))`;
         }
     );
 
@@ -415,7 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (distance < -60) {
 
             sliderTrack.style.transform =
-                "translateX(-66.666666%)";
+                "translateX(-200%)";
 
 
             setTimeout(() => {
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
         else {
 
             sliderTrack.style.transform =
-                "translateX(-33.333333%)";
+                "translateX(-100%)";
         }
 
 
