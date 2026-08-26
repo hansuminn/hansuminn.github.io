@@ -292,9 +292,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================
-       공통 드래그 함수
+        /* =====================================
+       SWIPE / DRAG
+       PC + 아이폰 공용
     ===================================== */
+
+    let dragging = false;
+    let dragStartX = 0;
+    let dragCurrentX = 0;
+
 
     function startDrag(x) {
 
@@ -303,8 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dragStartX = x;
         dragCurrentX = x;
 
-        sliderTrack.style.transition =
-            "none";
+        sliderTrack.style.transition = "none";
     }
 
 
@@ -335,41 +340,49 @@ document.addEventListener("DOMContentLoaded", () => {
             "transform 0.28s ease";
 
 
-        /* 왼쪽 → 다음 */
+        /* 왼쪽으로 밀기 → 다음 작품 */
 
-        if (distance < -60) {
+        if (distance < -50) {
 
             sliderTrack.style.transform =
                 "translateX(-200%)";
 
-
             setTimeout(() => {
 
-                nextArtwork();
+                currentIndex =
+                    (currentIndex + 1) %
+                    artworks.length;
+
+                showArtwork(currentIndex);
 
             }, 280);
-
         }
 
 
-        /* 오른쪽 → 이전 */
+        /* 오른쪽으로 밀기 → 이전 작품 */
 
-        else if (distance > 60) {
+        else if (distance > 50) {
 
             sliderTrack.style.transform =
                 "translateX(0%)";
 
-
             setTimeout(() => {
 
-                previousArtwork();
+                currentIndex =
+                    (
+                        currentIndex -
+                        1 +
+                        artworks.length
+                    ) %
+                    artworks.length;
+
+                showArtwork(currentIndex);
 
             }, 280);
-
         }
 
 
-        /* 조금 움직임 → 원래 자리 */
+        /* 조금만 움직였으면 원위치 */
 
         else {
 
@@ -380,90 +393,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
-       데스크톱 마우스
+       POINTER EVENTS
+       마우스 + 아이폰 공용
     ===================================== */
 
     sliderTrack.addEventListener(
-        "mousedown",
+        "pointerdown",
         (event) => {
 
-            event.preventDefault();
-
             startDrag(event.clientX);
+
+            try {
+
+                sliderTrack.setPointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {}
         }
     );
 
 
-    window.addEventListener(
-        "mousemove",
+    sliderTrack.addEventListener(
+        "pointermove",
         (event) => {
+
+            if (!dragging) return;
 
             moveDrag(event.clientX);
         }
     );
 
 
-    window.addEventListener(
-        "mouseup",
+    sliderTrack.addEventListener(
+        "pointerup",
+        (event) => {
+
+            finishDrag();
+
+            try {
+
+                sliderTrack.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {}
+        }
+    );
+
+
+    sliderTrack.addEventListener(
+        "pointercancel",
         () => {
 
             finishDrag();
         }
     );
 
-
-    /* =====================================
-       아이폰 / 모바일
-    ===================================== */
-
-    sliderTrack.addEventListener(
-        "touchstart",
-        (event) => {
-
-            startDrag(
-                event.touches[0].clientX
-            );
-
-        },
-        { passive: true }
-    );
-
-
-    sliderTrack.addEventListener(
-        "touchmove",
-        (event) => {
-
-            /* Safari가 화면 제스처를 가져가지 못하게 함 */
-            event.preventDefault();
-
-            moveDrag(
-                event.touches[0].clientX
-            );
-
-        },
-        { passive: false }
-    );
-
-
-    sliderTrack.addEventListener(
-        "touchend",
-        () => {
-
-            finishDrag();
-
-        },
-        { passive: true }
-    );
-
-
-    sliderTrack.addEventListener(
-        "touchcancel",
-        () => {
-
-            finishDrag();
-
-        },
-        { passive: true }
-    );
 
 });
