@@ -495,4 +495,116 @@ document.addEventListener("DOMContentLoaded", () => {
         finishDrag
     );
 
+    /* =========================================
+   iPHONE TOUCH SWIPE
+========================================= */
+
+let touchStartX = 0;
+let touchCurrentX = 0;
+let touchDragging = false;
+
+sliderTrack.addEventListener(
+    "touchstart",
+    (event) => {
+
+        touchDragging = true;
+
+        touchStartX =
+            event.touches[0].clientX;
+
+        touchCurrentX =
+            touchStartX;
+
+        sliderTrack.style.transition =
+            "none";
+    },
+    { passive: true }
+);
+
+
+sliderTrack.addEventListener(
+    "touchmove",
+    (event) => {
+
+        if (!touchDragging) return;
+
+        touchCurrentX =
+            event.touches[0].clientX;
+
+        const distance =
+            touchCurrentX - touchStartX;
+
+        sliderTrack.style.transform =
+            `translateX(calc(-100% + ${distance}px))`;
+    },
+    { passive: true }
+);
+
+
+sliderTrack.addEventListener(
+    "touchend",
+    () => {
+
+        if (!touchDragging) return;
+
+        touchDragging = false;
+
+        const distance =
+            touchCurrentX - touchStartX;
+
+        sliderTrack.style.transition =
+            "transform 0.28s ease";
+
+
+        /* 다음 작품 */
+
+        if (distance < -60) {
+
+            sliderTrack.style.transform =
+                "translateX(-200%)";
+
+            setTimeout(() => {
+
+                currentIndex =
+                    (currentIndex + 1)
+                    % artworks.length;
+
+                showArtwork(currentIndex);
+
+            }, 280);
+        }
+
+
+        /* 이전 작품 */
+
+        else if (distance > 60) {
+
+            sliderTrack.style.transform =
+                "translateX(0%)";
+
+            setTimeout(() => {
+
+                currentIndex =
+                    (
+                        currentIndex -
+                        1 +
+                        artworks.length
+                    )
+                    % artworks.length;
+
+                showArtwork(currentIndex);
+
+            }, 280);
+        }
+
+
+        /* 조금만 밀면 원위치 */
+
+        else {
+
+            sliderTrack.style.transform =
+                "translateX(-100%)";
+        }
+    }
+);
 });
