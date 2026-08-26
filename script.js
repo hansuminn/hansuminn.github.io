@@ -217,58 +217,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function goNext() {
 
-        if (animating) return;
+    if (animating) return;
 
-        animating = true;
+    animating = true;
 
-        sliderTrack.style.transition =
-            "transform 0.28s ease";
+    const isDesktop =
+        window.matchMedia("(hover: hover)").matches;
 
-        sliderTrack.style.transform =
-            "translate3d(-200%, 0, 0)";
+    const duration =
+        isDesktop ? 120 : 280;
 
-        window.setTimeout(() => {
+    sliderTrack.style.transition =
+        `transform ${duration}ms ease`;
 
-            currentIndex =
-                (currentIndex + 1) %
-                artworks.length;
+    sliderTrack.style.transform =
+        "translate3d(-200%, 0, 0)";
 
-            showArtwork(currentIndex);
+    window.setTimeout(() => {
 
-            animating = false;
+        currentIndex =
+            (currentIndex + 1) %
+            artworks.length;
 
-        }, 280);
-    }
+        showArtwork(currentIndex);
+
+        animating = false;
+
+    }, duration);
+}
 
 
     function goPrevious() {
 
-        if (animating) return;
+    if (animating) return;
 
-        animating = true;
+    animating = true;
 
-        sliderTrack.style.transition =
-            "transform 0.28s ease";
+    const isDesktop =
+        window.matchMedia("(hover: hover)").matches;
 
-        sliderTrack.style.transform =
-            "translate3d(0%, 0, 0)";
+    const duration =
+        isDesktop ? 120 : 280;
 
-        window.setTimeout(() => {
+    sliderTrack.style.transition =
+        `transform ${duration}ms ease`;
 
-            currentIndex =
-                (
-                    currentIndex -
-                    1 +
-                    artworks.length
-                ) %
-                artworks.length;
+    sliderTrack.style.transform =
+        "translate3d(0%, 0, 0)";
 
-            showArtwork(currentIndex);
+    window.setTimeout(() => {
 
-            animating = false;
+        currentIndex =
+            (
+                currentIndex -
+                1 +
+                artworks.length
+            ) %
+            artworks.length;
 
-        }, 280);
-    }
+        showArtwork(currentIndex);
+
+        animating = false;
+
+    }, duration);
+}
 
 
     /* =====================================
