@@ -580,24 +580,6 @@ body.lightbox-open {
    3 SLIDES
 ========================================= */
 
-.slider-track {
-    width: 300%;
-    height: 100%;
-
-    display: flex;
-
-    transform:
-        translateX(-100%);
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    touch-action: pan-y;
-
-    cursor: grab;
-}
-
 
 .slider-track {
     width: 100%;
@@ -610,7 +592,7 @@ body.lightbox-open {
     user-select: none;
     -webkit-user-select: none;
 
-    touch-action: pan-y;
+    touch-action: none;
 
     cursor: grab;
 }
@@ -845,7 +827,7 @@ body.lightbox-open {
     position: relative;
     width: 100%;
     overflow: hidden;
-    touch-action: pan-y;
+    touch-action: none;
 }
 /* 상세페이지 이름을 메인과 동일하게 */
 
