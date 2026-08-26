@@ -39,10 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentIndex = 0;
 
-    let dragStartX = 0;
-    let dragCurrentX = 0;
-    let dragging = false;
-
 
     /* =====================================
        이전 / 현재 / 다음 이미지 준비
