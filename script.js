@@ -9,39 +9,50 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".artwork img")
     );
 
+    /* 메인페이지에서는 실행하지 않음 */
     if (artworks.length === 0) return;
 
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxCaption = document.getElementById("lightbox-caption");
+    const closeButton = document.getElementById("lightbox-close");
 
-    const lightbox =
-        document.getElementById("lightbox");
+    const sliderWindow = document.querySelector(".slider-window");
+    const sliderTrack = document.getElementById("slider-track");
 
-    const lightboxImage =
-        document.getElementById("lightbox-image");
-
-    const lightboxCaption =
-        document.getElementById("lightbox-caption");
-
-    const closeButton =
-        document.getElementById("lightbox-close");
-
-    const sliderTrack =
-        document.getElementById("slider-track");
-
-    const prevImage =
-        document.getElementById("prev-image");
-
-    const nextImage =
-        document.getElementById("next-image");
+    const prevImage = document.getElementById("prev-image");
+    const nextImage = document.getElementById("next-image");
 
     const thumbnailContainer =
         document.getElementById("lightbox-thumbnails");
 
+    /* 필요한 요소가 없으면 중단 */
+    if (
+        !lightbox ||
+        !lightboxImage ||
+        !lightboxCaption ||
+        !closeButton ||
+        !sliderWindow ||
+        !sliderTrack ||
+        !prevImage ||
+        !nextImage ||
+        !thumbnailContainer
+    ) {
+        console.error("Lightbox HTML structure is incomplete.");
+        return;
+    }
 
     let currentIndex = 0;
 
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+    let moved = false;
+    let animating = false;
+
 
     /* =====================================
-       이전 / 현재 / 다음 이미지 준비
+       SLIDES 준비
     ===================================== */
 
     function prepareSlides() {
@@ -54,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const nextIndex =
             (currentIndex + 1) % total;
 
-
         prevImage.src =
             artworks[previousIndex].src;
 
@@ -64,29 +74,25 @@ document.addEventListener("DOMContentLoaded", () => {
         nextImage.src =
             artworks[nextIndex].src;
 
-
         sliderTrack.style.transition = "none";
-
         sliderTrack.style.transform =
-            "translateX(-100%)";
+            "translate3d(-100%, 0, 0)";
     }
 
 
     /* =====================================
-       캡션
+       CAPTION
     ===================================== */
 
     function updateCaption() {
 
-        const artwork =
-            artworks[currentIndex];
+        const artwork = artworks[currentIndex];
 
         const title =
             artwork.dataset.title || "";
 
         const caption =
             artwork.dataset.caption || "";
-
 
         if (title) {
 
@@ -103,13 +109,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================
-       현재 썸네일 표시
+       THUMBNAIL 상태
     ===================================== */
 
     function updateThumbnail() {
 
         const thumbs =
-            document.querySelectorAll(".lightbox-thumb");
+            thumbnailContainer.querySelectorAll(
+                ".lightbox-thumb"
+            );
 
         thumbs.forEach((thumb, index) => {
 
@@ -117,13 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 "active-thumb",
                 index === currentIndex
             );
-
         });
     }
 
 
     /* =====================================
-       작품 표시
+       현재 작품 표시
     ===================================== */
 
     function showArtwork(index) {
@@ -136,50 +143,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-/* =====================================
-   작품 클릭 → 확대
-   PC + 모바일
-===================================== */
+    /* =====================================
+       LIGHTBOX 열기
+    ===================================== */
 
-function openLightbox(index) {
+    function openLightbox(index) {
 
-    lightbox.classList.add("active");
+        currentIndex = index;
 
-    document.body.classList.add(
-        "lightbox-open"
-    );
+        lightbox.classList.add("active");
 
-    showArtwork(index);
-}
+        document.body.classList.add(
+            "lightbox-open"
+        );
 
-
-artworks.forEach((image, index) => {
-
-    /* PC 클릭 */
-    image.addEventListener("click", () => {
-
-        openLightbox(index);
-
-    });
+        showArtwork(index);
+    }
 
 
-    /* 아이폰 / 모바일 탭 */
-    image.addEventListener("pointerup", (event) => {
+    /* 작품 클릭 */
 
-        if (event.pointerType === "touch") {
+    artworks.forEach((image, index) => {
 
-            event.preventDefault();
-
+        image.addEventListener("click", () => {
             openLightbox(index);
-        }
+        });
 
     });
-
-});
 
 
     /* =====================================
-       닫기
+       LIGHTBOX 닫기
     ===================================== */
 
     function closeLightbox() {
@@ -189,6 +183,9 @@ artworks.forEach((image, index) => {
         document.body.classList.remove(
             "lightbox-open"
         );
+
+        dragging = false;
+        animating = false;
     }
 
 
@@ -210,7 +207,6 @@ artworks.forEach((image, index) => {
             if (event.target === lightbox) {
                 closeLightbox();
             }
-
         }
     );
 
@@ -219,32 +215,64 @@ artworks.forEach((image, index) => {
        다음 / 이전
     ===================================== */
 
-    function nextArtwork() {
+    function goNext() {
 
-        currentIndex =
-            (currentIndex + 1) %
-            artworks.length;
+        if (animating) return;
 
-        showArtwork(currentIndex);
+        animating = true;
+
+        sliderTrack.style.transition =
+            "transform 0.28s ease";
+
+        sliderTrack.style.transform =
+            "translate3d(-200%, 0, 0)";
+
+        window.setTimeout(() => {
+
+            currentIndex =
+                (currentIndex + 1) %
+                artworks.length;
+
+            showArtwork(currentIndex);
+
+            animating = false;
+
+        }, 280);
     }
 
 
-    function previousArtwork() {
+    function goPrevious() {
 
-        currentIndex =
-            (
-                currentIndex -
-                1 +
-                artworks.length
-            ) %
-            artworks.length;
+        if (animating) return;
 
-        showArtwork(currentIndex);
+        animating = true;
+
+        sliderTrack.style.transition =
+            "transform 0.28s ease";
+
+        sliderTrack.style.transform =
+            "translate3d(0%, 0, 0)";
+
+        window.setTimeout(() => {
+
+            currentIndex =
+                (
+                    currentIndex -
+                    1 +
+                    artworks.length
+                ) %
+                artworks.length;
+
+            showArtwork(currentIndex);
+
+            animating = false;
+
+        }, 280);
     }
 
 
     /* =====================================
-       키보드
+       KEYBOARD
     ===================================== */
 
     document.addEventListener(
@@ -252,34 +280,33 @@ artworks.forEach((image, index) => {
         (event) => {
 
             if (
-                !lightbox.classList.contains("active")
-            ) return;
-
+                !lightbox.classList.contains(
+                    "active"
+                )
+            ) {
+                return;
+            }
 
             if (event.key === "ArrowRight") {
-                nextArtwork();
+                goNext();
             }
-
 
             if (event.key === "ArrowLeft") {
-                previousArtwork();
+                goPrevious();
             }
-
 
             if (event.key === "Escape") {
                 closeLightbox();
             }
-
         }
     );
 
 
     /* =====================================
-       작은 썸네일
+       THUMBNAILS 생성
     ===================================== */
 
     thumbnailContainer.innerHTML = "";
-
 
     artworks.forEach((image, index) => {
 
@@ -287,10 +314,9 @@ artworks.forEach((image, index) => {
             document.createElement("img");
 
         thumb.src = image.src;
-
+        thumb.alt = "";
         thumb.className =
             "lightbox-thumb";
-
 
         thumb.addEventListener(
             "click",
@@ -298,175 +324,199 @@ artworks.forEach((image, index) => {
 
                 event.stopPropagation();
 
+                if (animating) return;
+
                 showArtwork(index);
             }
         );
 
-
         thumbnailContainer.appendChild(
             thumb
         );
-
     });
 
 
-        /* =====================================
-       SWIPE / DRAG
-       PC + 아이폰 공용
+    /* =====================================
+       DRAG 공통
     ===================================== */
 
-    let dragging = false;
-    let dragStartX = 0;
-    let dragCurrentX = 0;
+    function beginDrag(x) {
 
-
-    function startDrag(x) {
+        if (animating) return;
 
         dragging = true;
+        moved = false;
 
-        dragStartX = x;
-        dragCurrentX = x;
+        startX = x;
+        currentX = x;
 
-        sliderTrack.style.transition = "none";
+        sliderTrack.style.transition =
+            "none";
     }
 
 
-    function moveDrag(x) {
+    function dragTo(x) {
 
-        if (!dragging) return;
+        if (!dragging || animating) return;
 
-        dragCurrentX = x;
+        currentX = x;
 
         const distance =
-            dragCurrentX - dragStartX;
+            currentX - startX;
+
+        if (Math.abs(distance) > 4) {
+            moved = true;
+        }
+
+        /*
+          현재 슬라이드는 -100%.
+          손가락 이동 px만큼 추가.
+        */
 
         sliderTrack.style.transform =
-            `translateX(calc(-100% + ${distance}px))`;
+            `translate3d(calc(-100% + ${distance}px), 0, 0)`;
     }
 
 
-    function finishDrag() {
+    function endDrag() {
 
-        if (!dragging) return;
+        if (!dragging || animating) return;
 
         dragging = false;
 
         const distance =
-            dragCurrentX - dragStartX;
-
-        sliderTrack.style.transition =
-            "transform 0.28s ease";
-
-
-        /* 왼쪽으로 밀기 → 다음 작품 */
+            currentX - startX;
 
         if (distance < -50) {
 
-            sliderTrack.style.transform =
-                "translateX(-200%)";
+            goNext();
 
-            setTimeout(() => {
+        } else if (distance > 50) {
 
-                currentIndex =
-                    (currentIndex + 1) %
-                    artworks.length;
+            goPrevious();
 
-                showArtwork(currentIndex);
+        } else {
 
-            }, 280);
-        }
-
-
-        /* 오른쪽으로 밀기 → 이전 작품 */
-
-        else if (distance > 50) {
+            sliderTrack.style.transition =
+                "transform 0.22s ease";
 
             sliderTrack.style.transform =
-                "translateX(0%)";
-
-            setTimeout(() => {
-
-                currentIndex =
-                    (
-                        currentIndex -
-                        1 +
-                        artworks.length
-                    ) %
-                    artworks.length;
-
-                showArtwork(currentIndex);
-
-            }, 280);
-        }
-
-
-        /* 조금만 움직였으면 원위치 */
-
-        else {
-
-            sliderTrack.style.transform =
-                "translateX(-100%)";
+                "translate3d(-100%, 0, 0)";
         }
     }
 
 
     /* =====================================
-       POINTER EVENTS
-       마우스 + 아이폰 공용
+       DESKTOP MOUSE
     ===================================== */
 
-    sliderTrack.addEventListener(
-        "pointerdown",
+    sliderWindow.addEventListener(
+        "mousedown",
         (event) => {
 
-            startDrag(event.clientX);
+            if (event.button !== 0) return;
 
-            try {
+            event.preventDefault();
 
-                sliderTrack.setPointerCapture(
-                    event.pointerId
-                );
-
-            } catch (error) {}
+            beginDrag(event.clientX);
         }
     );
 
 
-    sliderTrack.addEventListener(
-        "pointermove",
+    window.addEventListener(
+        "mousemove",
         (event) => {
 
             if (!dragging) return;
 
-            moveDrag(event.clientX);
+            dragTo(event.clientX);
         }
     );
 
 
-    sliderTrack.addEventListener(
-        "pointerup",
-        (event) => {
-
-            finishDrag();
-
-            try {
-
-                sliderTrack.releasePointerCapture(
-                    event.pointerId
-                );
-
-            } catch (error) {}
-        }
-    );
-
-
-    sliderTrack.addEventListener(
-        "pointercancel",
+    window.addEventListener(
+        "mouseup",
         () => {
 
-            finishDrag();
+            if (!dragging) return;
+
+            endDrag();
         }
     );
 
+
+    /* =====================================
+       iPHONE / TOUCH
+    ===================================== */
+
+    sliderWindow.addEventListener(
+        "touchstart",
+        (event) => {
+
+            if (event.touches.length !== 1) {
+                return;
+            }
+
+            beginDrag(
+                event.touches[0].clientX
+            );
+
+        },
+        { passive: true }
+    );
+
+
+    sliderWindow.addEventListener(
+        "touchmove",
+        (event) => {
+
+            if (!dragging) return;
+
+            const x =
+                event.touches[0].clientX;
+
+            const distance =
+                x - startX;
+
+            /*
+              좌우 움직임이 시작되면
+              Safari 기본 제스처를 막음.
+            */
+
+            if (Math.abs(distance) > 5) {
+                event.preventDefault();
+            }
+
+            dragTo(x);
+
+        },
+        { passive: false }
+    );
+
+
+    sliderWindow.addEventListener(
+        "touchend",
+        () => {
+
+            if (!dragging) return;
+
+            endDrag();
+
+        },
+        { passive: true }
+    );
+
+
+    sliderWindow.addEventListener(
+        "touchcancel",
+        () => {
+
+            if (!dragging) return;
+
+            endDrag();
+
+        },
+        { passive: true }
+    );
 
 });
