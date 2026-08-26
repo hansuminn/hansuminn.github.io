@@ -136,24 +136,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================
-       작품 클릭 → 확대
-    ===================================== */
+/* =====================================
+   작품 클릭 → 확대
+   PC + 모바일
+===================================== */
 
-    artworks.forEach((image, index) => {
+function openLightbox(index) {
 
-        image.addEventListener("click", () => {
+    lightbox.classList.add("active");
 
-            lightbox.classList.add("active");
+    document.body.classList.add(
+        "lightbox-open"
+    );
 
-            document.body.classList.add(
-                "lightbox-open"
-            );
+    showArtwork(index);
+}
 
-            showArtwork(index);
-        });
+
+artworks.forEach((image, index) => {
+
+    /* PC 클릭 */
+    image.addEventListener("click", () => {
+
+        openLightbox(index);
 
     });
+
+
+    /* 아이폰 / 모바일 탭 */
+    image.addEventListener("pointerup", (event) => {
+
+        if (event.pointerType === "touch") {
+
+            event.preventDefault();
+
+            openLightbox(index);
+        }
+
+    });
+
+});
 
 
     /* =====================================
